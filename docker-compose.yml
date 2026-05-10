@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: url-shortener
+      POSTGRES_USER: akshit
+      POSTGRES_PASSWORD: akshit
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: url-shortener-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/url-shortener
+      SPRING_DATASOURCE_USERNAME: akshit
+      SPRING_DATASOURCE_PASSWORD: akshit
+      JWT_SECRET: secret123
+      JWT_EXPIRATION: 3600
+
+volumes:
+  postgres_data:
